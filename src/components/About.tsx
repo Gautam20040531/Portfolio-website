@@ -6,7 +6,7 @@ const About = () => {
       <div className="about-me">
         <h3 className="title">About Me</h3>
         <p className="para">
-          I am a passionate Full-Stack Developer and Cybersecurity enthusiast currently pursuing my Diploma in Computer Science and Engineering. I specialize in building secure, scalable web and mobile applications using React, Node.js, and Flutter. Beyond software development, I have a deep interest in ethical hacking, IoT hardware tinkering, and finding innovative digital solutions. I love turning complex problems into elegant, user-friendly experiences.
+          I'm Gautam Pal, a dynamic full-stack developer and cybersecurity expert. I specialize in building robust and user-friendly digital experiences, mainly utilizing technology such as React and Flutter. Deeply passionate about cybersecurity and ethical hacking, I prioritize security in every line of code I write. In my free time, I also love tinkering with hardware like microcontroller board.
         </p>
       </div>
     </div>

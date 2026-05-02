@@ -13,35 +13,35 @@ const Career = () => {
             <div className="career-dot"></div>
           </div>
           
-          {/* Experience 1: Education & Foundation */}
+          {/* Timeline Item 1: Diploma in CSE */}
           <div className="career-info-box">
             <div className="career-info-in">
               <div className="career-role">
-                <h4>Computer Science Student</h4>
-                <h5>Diploma in CSE (4th Semester)</h5>
+                <h4>Pursuing Diploma in CSE</h4>
+                <h5>N/A (Update your College Name if needed)</h5>
               </div>
               <h3>2024</h3>
             </div>
             <p>
-              Started my academic journey in Computer Science and Engineering. Built a strong foundation in programming, networking, and explored IoT projects using ESP32 and various microcontrollers.
+              Started my specialized journey in Computer Science and Engineering. Built a strong foundation in core software principles and networking, laying the groundwork for further development and security expertise.
             </p>
           </div>
 
-          {/* Experience 2: Freelance & Projects */}
+          {/* Timeline Item 2: Projects & Development */}
           <div className="career-info-box">
             <div className="career-info-in">
               <div className="career-role">
-                <h4>Full-Stack Developer</h4>
-                <h5>Freelance & Open Source</h5>
+                <h4>Development & Security</h4>
+                <h5>Open Source & Freelance</h5>
               </div>
               <h3>2025</h3>
             </div>
             <p>
-              Developed multiple dynamic projects, including an e-commerce platform (Texsa) and cross-platform mobile apps. Gained expertise in React, Tailwind CSS, Supabase, and ethical hacking fundamentals.
+              Focused on building multiple real-world applications (Texsa, Online Book Store, Shri Guru Electric Works) with full-stack capabilities, particularly React. Integrated security best practices from day one.
             </p>
           </div>
 
-          {/* Experience 3: Current Role at Digontom */}
+          {/* Timeline Item 3: Current Position at Digontom */}
           <div className="career-info-box">
             <div className="career-info-in">
               <div className="career-role">
@@ -51,7 +51,7 @@ const Career = () => {
               <h3>NOW</h3>
             </div>
             <p>
-              Currently working as an IT and Full-Stack Web Development intern. Responsible for building web interfaces, managing daily technical tasks, and contributing to the company's IT infrastructure and development cycle.
+              Currently, I am working at Digontom company in IT and full-stack web development role. Responsible for maintaining, creating websites, managing daily technical operations and IT solutions.
             </p>
           </div>
 
