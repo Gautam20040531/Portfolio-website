@@ -3,32 +3,32 @@ import "./styles/Contact.css";
 
 const Contact = () => {
   return (
-    // ফিক্স: position এবং z-index অ্যাড করা হয়েছে ওভারল্যাপ আটকানোর জন্য
-    <div className="contact-section section-container" id="contact" style={{ position: "relative", zIndex: 20 }}>
+    <div 
+      className="contact-section section-container" 
+      id="contact" 
+      style={{ position: "relative", zIndex: 20, backgroundColor: "#000" }}
+    >
       <div className="contact-container">
         <h3>Contact</h3>
         <div className="contact-flex">
           <div className="contact-box">
             <h4>Email</h4>
             <p>
-              {/* এখানে আপনার আসল ইমেইল বসিয়ে নেবেন */}
-              <a href="mailto:your.email@example.com" data-cursor="disable">
-                your.email@example.com
+              <a href="mailto:gp2285173@gmail.com" data-cursor="disable">
+                gp2285173@gmail.com
               </a>
             </p>
             <h4>Phone</h4>
             <p>
-              {/* এখানে আপনার আসল ফোন নম্বর বসিয়ে নেবেন */}
-              <a href="tel:+9199999999" data-cursor="disable">
-                +91 99999 99999
+              <a href="tel:+916291402425" data-cursor="disable">
+                +91 62914 02425
               </a>
             </p>
           </div>
           <div className="contact-box">
             <h4>Social</h4>
-            {/* href এর ভেতরে আপনার নিজের সোশ্যাল মিডিয়ার লিংকগুলো বসিয়ে দিন */}
             <a
-              href="https://github.com"
+              href="https://github.com/Gautam20040531"
               target="_blank"
               data-cursor="disable"
               className="contact-social"
@@ -36,7 +36,7 @@ const Contact = () => {
               Github <MdArrowOutward />
             </a>
             <a
-              href="https://www.linkedin.com"
+              href="https://www.linkedin.com/in/gautam-pal-regitcode/"
               target="_blank"
               data-cursor="disable"
               className="contact-social"
