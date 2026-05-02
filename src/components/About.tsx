@@ -6,7 +6,7 @@ const About = () => {
       <div className="about-me">
         <h3 className="title">About Me</h3>
         <p className="para">
-          I'm Gautam Pal, a dynamic full-stack developer and cybersecurity expert. I specialize in building robust and user-friendly digital experiences, mainly utilizing technology such as React and Flutter. Deeply passionate about cybersecurity and ethical hacking, I prioritize security in every line of code I write. In my free time, I also love tinkering with hardware like microcontroller board.
+          I'm Gautam Pal, a Software Developer and the founder of Regit Code. I engineer story-driven websites and high-performance applications that separate modern brands from their competition. I specialize in Next.js, React, Tailwind CSS, and Framer Motion to craft buttery-smooth digital experiences. Currently pursuing my Diploma in CSE at Brainware University, I also have a deep passion for cybersecurity, IoT projects, and building complex systems like live streaming engines.
         </p>
       </div>
     </div>
