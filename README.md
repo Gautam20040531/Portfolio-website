@@ -25,11 +25,8 @@ Build your own version — don’t just copy.
 
 ## 🛠️ Instructions
 
-I have modified the GSAP Club plugins using trial versions.  
-⚠️ Note: Trial plugins cannot be used for production or hosting.
 
-For official GSAP Club plugins, refer here:  
-https://gsap.com/docs/v3/Installation/
+
 
 ---
 
@@ -57,9 +54,5 @@ Any usage, extraction, or redistribution of that avatar from my live website is 
 
 ---
 
-## 📄 License
 
-This project is licensed under the Personal Portfolio License (PPL) v1.0.
-
-See the LICENSE file for full details
 
