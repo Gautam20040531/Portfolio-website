@@ -10,6 +10,12 @@ import WhatIDo from "./WhatIDo";
 import Work from "./Work";
 import setSplitText from "./utils/splitText";
 
+// GSAP ইম্পোর্ট করা হলো রিফ্রেশ করার জন্য
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
+
 const TechStack = lazy(() => import("./TechStack"));
 
 const MainContainer = ({ children }: PropsWithChildren) => {
@@ -21,6 +27,8 @@ const MainContainer = ({ children }: PropsWithChildren) => {
     const resizeHandler = () => {
       setSplitText();
       setIsDesktopView(window.innerWidth > 1024);
+      // উইন্ডো রিসাইজ হলেও GSAP কে রিফ্রেশ করতে বলা হলো
+      ScrollTrigger.refresh();
     };
     resizeHandler();
     window.addEventListener("resize", resizeHandler);
@@ -28,6 +36,24 @@ const MainContainer = ({ children }: PropsWithChildren) => {
       window.removeEventListener("resize", resizeHandler);
     };
   }, [isDesktopView]);
+
+  // নতুন ফিক্স: ResizeObserver দিয়ে কন্টেন্ট লোড হওয়ার পর GSAP রিফ্রেশ করা
+  useEffect(() => {
+    const smoothContent = document.getElementById("smooth-content");
+    let resizeObserver: ResizeObserver | null = null;
+
+    if (smoothContent) {
+      resizeObserver = new ResizeObserver(() => {
+        // যখনই TechStack লোড হবে বা হাইট চেঞ্জ হবে, GSAP নতুন করে মাপ নিয়ে নেবে
+        ScrollTrigger.refresh();
+      });
+      resizeObserver.observe(smoothContent);
+    }
+
+    return () => {
+      if (resizeObserver) resizeObserver.disconnect();
+    };
+  }, []);
 
   return (
     <div className="container-main">

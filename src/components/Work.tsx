@@ -48,8 +48,8 @@ const Work = () => {
   }, []);
   
   return (
-    // ফিক্স: position এবং z-index অ্যাড করা হয়েছে ওভারল্যাপ আটকানোর জন্য
-    <div className="work-section" id="work" style={{ position: "relative", zIndex: 10 }}>
+    // ফিক্স: backgroundColor: "#000" যোগ করা হলো যাতে ওভারল্যাপ হলেও পেছনের থ্রিডি বল দেখা না যায়
+    <div className="work-section" id="work" style={{ position: "relative", zIndex: 10, backgroundColor: "#000" }}>
       <div className="work-container section-container">
         <h2>
           My <span>Work</span>
