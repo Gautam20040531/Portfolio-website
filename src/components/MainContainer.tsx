@@ -8,7 +8,7 @@ import Navbar from "./Navbar";
 import SocialIcons from "./SocialIcons";
 import WhatIDo from "./WhatIDo";
 import Work from "./Work";
-import setSplitText from "./utils/splitText";
+// ফিক্স: gsap-trial এর splitText ইম্পোর্ট রিমুভ করা হয়েছে
 
 // GSAP ইম্পোর্ট করা হলো রিফ্রেশ করার জন্য
 import gsap from "gsap";
@@ -25,7 +25,7 @@ const MainContainer = ({ children }: PropsWithChildren) => {
 
   useEffect(() => {
     const resizeHandler = () => {
-      setSplitText();
+      // ফিক্স: setSplitText() রিমুভ করা হয়েছে কারণ এটি পেইড প্লাগিন ব্যবহার করছিল
       setIsDesktopView(window.innerWidth > 1024);
       // উইন্ডো রিসাইজ হলেও GSAP কে রিফ্রেশ করতে বলা হলো
       ScrollTrigger.refresh();
@@ -64,7 +64,7 @@ const MainContainer = ({ children }: PropsWithChildren) => {
       <div id="smooth-wrapper">
         <div id="smooth-content">
           <div className="container-main">
-            <Landing>{!isDesktopView && children}</Landing>
+            <Landing />
             <About />
             <WhatIDo />
             <Career />

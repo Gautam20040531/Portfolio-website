@@ -2,46 +2,31 @@ import { useEffect } from "react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import HoverLinks from "./HoverLinks";
 import { gsap } from "gsap";
-import { ScrollSmoother } from "gsap-trial/ScrollSmoother";
 import "./styles/Navbar.css";
 
-gsap.registerPlugin(ScrollSmoother, ScrollTrigger);
-export let smoother: ScrollSmoother;
+// ফিক্স: gsap-trial/ScrollSmoother রিমুভ করা হয়েছে
+gsap.registerPlugin(ScrollTrigger);
 
 const Navbar = () => {
   useEffect(() => {
-    try {
-      smoother = ScrollSmoother.create({
-        wrapper: "#smooth-wrapper",
-        content: "#smooth-content",
-        smooth: 1.7,
-        speed: 1.7,
-        effects: true,
-        autoResize: true,
-        ignoreMobileResize: true,
-      });
-
-      smoother.scrollTop(0);
-      smoother.paused(true);
-
-      let links = document.querySelectorAll(".header ul a");
-      links.forEach((elem) => {
-        let element = elem as HTMLAnchorElement;
-        element.addEventListener("click", (e) => {
-          if (window.innerWidth > 1024) {
-            e.preventDefault();
-            let elem = e.currentTarget as HTMLAnchorElement;
-            let section = elem.getAttribute("data-href");
-            if (section) smoother.scrollTo(section, true, "top top");
+    // ফিক্স: পেইড স্ক্রল-স্মুথারের বদলে ব্রাউজারের নিজস্ব ফ্রি স্মুথ-স্ক্রলিং ব্যবহার করা হলো
+    let links = document.querySelectorAll(".header ul a");
+    links.forEach((elem) => {
+      let element = elem as HTMLAnchorElement;
+      element.addEventListener("click", (e) => {
+        if (window.innerWidth > 1024) {
+          e.preventDefault();
+          let targetId = element.getAttribute("data-href");
+          if (targetId) {
+            const targetElement = document.querySelector(targetId);
+            if (targetElement) {
+              // Native Smooth Scroll
+              targetElement.scrollIntoView({ behavior: "smooth" });
+            }
           }
-        });
+        }
       });
-      window.addEventListener("resize", () => {
-        ScrollSmoother.refresh(true);
-      });
-    } catch (error) {
-      console.error("ScrollSmoother failed to initialize:", error);
-    }
+    });
   }, []);
   
   return (
