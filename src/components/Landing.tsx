@@ -20,11 +20,6 @@ const Landing = ({ children }: PropsWithChildren) => {
               <div className="landing-h2-1">Software</div>
               <div className="landing-h2-2">Engineer</div>
             </h2>
-            <h2>
-              {/* অ্যানিমেশনের জন্য শব্দ দুটো উল্টে দেওয়া হয়েছে আগের লজিক অনুযায়ী */}
-              <div className="landing-h2-info">Engineer</div>
-              <div className="landing-h2-info-1">Software</div>
-            </h2>
           </div>
         </div>
         {children}
