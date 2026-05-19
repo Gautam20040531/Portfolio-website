@@ -9,30 +9,39 @@ gsap.registerPlugin(ScrollTrigger);
 
 const Navbar = () => {
   useEffect(() => {
-    // ফিক্স: পেইড স্ক্রল-স্মুথারের বদলে ব্রাউজারের নিজস্ব ফ্রি স্মুথ-স্ক্রলিং ব্যবহার করা হলো
-    let links = document.querySelectorAll(".header ul a");
+    // Handle navbar anchor smooth scrolls & dynamic pathnames
+    const links = document.querySelectorAll(".header ul a");
     links.forEach((elem) => {
-      let element = elem as HTMLAnchorElement;
+      const element = elem as HTMLAnchorElement;
       element.addEventListener("click", (e) => {
-        if (window.innerWidth > 1024) {
-          e.preventDefault();
-          let targetId = element.getAttribute("data-href");
-          if (targetId) {
-            const targetElement = document.querySelector(targetId);
-            if (targetElement) {
-              // Native Smooth Scroll
-              targetElement.scrollIntoView({ behavior: "smooth" });
-            }
+        e.preventDefault();
+        const targetId = element.getAttribute("data-href");
+        if (targetId) {
+          const targetElement = document.querySelector(targetId);
+          if (targetElement) {
+            targetElement.scrollIntoView({ behavior: "smooth" });
+            const path = targetId === "#" ? "/" : targetId.replace("#", "/");
+            window.history.pushState(null, "", path);
           }
         }
       });
     });
+
+    // Handle logo title clicks to scroll to top and reset path to /
+    const logoLink = document.querySelector(".navbar-title");
+    if (logoLink) {
+      logoLink.addEventListener("click", (e) => {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        window.history.pushState(null, "", "/");
+      });
+    }
   }, []);
   
   return (
     <>
       <div className="header">
-        <a href="/#" className="navbar-title" data-cursor="disable">
+        <a href="/" className="navbar-title" data-cursor="disable">
           Gautam Pal
         </a>
         <a

@@ -20,8 +20,10 @@ const Scene = () => {
   const { setLoading } = useLoading();
 
   const [character, setChar] = useState<THREE.Object3D | null>(null);
+
   useEffect(() => {
     if (canvasDiv.current) {
+      let isMounted = true;
       let rect = canvasDiv.current.getBoundingClientRect();
       let container = { width: rect.width, height: rect.height };
       const aspect = container.width / container.height;
@@ -29,12 +31,15 @@ const Scene = () => {
 
       const renderer = new THREE.WebGLRenderer({
         alpha: true,
-        antialias: true,
+        antialias: false,
+        powerPreference: "high-performance",
       });
       renderer.setSize(container.width, container.height);
-      renderer.setPixelRatio(window.devicePixelRatio);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       renderer.toneMapping = THREE.ACESFilmicToneMapping;
       renderer.toneMappingExposure = 1;
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
       canvasDiv.current.appendChild(renderer.domElement);
 
       const camera = new THREE.PerspectiveCamera(14.5, aspect, 0.1, 1000);
@@ -54,24 +59,30 @@ const Scene = () => {
       const { loadCharacter } = setCharacter(renderer, scene, camera);
 
       loadCharacter().then((gltf) => {
+        if (!isMounted) return;
         if (gltf) {
-          const animations = setAnimations(gltf);
-          hoverDivRef.current && animations.hover(gltf, hoverDivRef.current);
-          mixer = animations.mixer;
-          let character = gltf.scene;
-          setChar(character);
-          scene.add(character);
-          headBone = character.getObjectByName("spine006") || null;
-          screenLight = character.getObjectByName("screenlight") || null;
-          progress.loaded().then(() => {
-            setTimeout(() => {
-              light.turnOnLights();
-              animations.startIntro();
-            }, 2500);
-          });
-          window.addEventListener("resize", () =>
-            handleResize(renderer, camera, canvasDiv, character)
-          );
+          try {
+            const animations = setAnimations(gltf);
+            hoverDivRef.current && animations.hover(gltf, hoverDivRef.current);
+            mixer = animations.mixer;
+            let character = gltf.scene;
+            setChar(character);
+            scene.add(character);
+            headBone = character.getObjectByName("spine006") || null;
+            screenLight = character.getObjectByName("screenlight") || null;
+            progress.loaded().then(() => {
+              setTimeout(() => {
+                light.turnOnLights();
+                animations.startIntro();
+              }, 2500);
+            });
+            window.addEventListener("resize", () =>
+              handleResize(renderer, camera, canvasDiv, character)
+            );
+          } catch (e) {
+            console.error("Error setting up character scene details:", e);
+            progress.loaded();
+          }
         }
       });
 
@@ -106,8 +117,17 @@ const Scene = () => {
         landingDiv.addEventListener("touchstart", onTouchStart);
         landingDiv.addEventListener("touchend", onTouchEnd);
       }
+
+      let lastElapsedTime = 0;
       const animate = () => {
-        requestAnimationFrame(animate);
+        const elapsedTime = clock.getElapsedTime();
+        const deltaTime = elapsedTime - lastElapsedTime;
+
+        // Cap frame processing overhead to roughly 60 frames per second (~0.0166s per tick)
+        if (deltaTime < 0.0166) return;
+
+        lastElapsedTime = elapsedTime;
+
         if (headBone) {
           handleHeadRotation(
             headBone,
@@ -119,23 +139,69 @@ const Scene = () => {
           );
           light.setPointLight(screenLight);
         }
-        const delta = clock.getDelta();
         if (mixer) {
-          mixer.update(delta);
+          mixer.update(deltaTime);
         }
         renderer.render(scene, camera);
       };
-      animate();
+
+      renderer.setAnimationLoop(animate);
+
+      // Subroutine to deep-dispose textures nested in materials
+      const disposeMaterial = (mat: any) => {
+        if (typeof mat.dispose === "function") mat.dispose();
+        for (const key of Object.keys(mat)) {
+          if (mat[key] && typeof mat[key].dispose === "function") {
+            try {
+              mat[key].dispose();
+            } catch (e) {
+              // Ignore non-disposable nested objects
+            }
+          }
+        }
+      };
+
       return () => {
+        isMounted = false;
+        console.log("Cleaning up WebGL Context to save GPU...");
         clearTimeout(debounce);
+
+        // 1. Halt the animation engine immediately
+        renderer.setAnimationLoop(null);
+
+        // 2. Remove the canvas element from the DOM structure
+        if (canvasDiv.current && renderer.domElement) {
+          if (canvasDiv.current.contains(renderer.domElement)) {
+            canvasDiv.current.removeChild(renderer.domElement);
+          }
+        }
+
+        // 3. Explicitly dispose of the asset scene tree
+        scene.traverse((object: any) => {
+          if (!object.isMesh) return;
+
+          // Dispose geometry configurations
+          if (object.geometry) {
+            object.geometry.dispose();
+          }
+
+          // Dispose materials and attached texture profiles
+          if (object.material) {
+            if (Array.isArray(object.material)) {
+              object.material.forEach((mat) => disposeMaterial(mat));
+            } else {
+              disposeMaterial(object.material);
+            }
+          }
+        });
+
+        // 4. Force terminate the WebGL context binder
         scene.clear();
         renderer.dispose();
+
         window.removeEventListener("resize", () =>
           handleResize(renderer, camera, canvasDiv, character!)
         );
-        if (canvasDiv.current) {
-          canvasDiv.current.removeChild(renderer.domElement);
-        }
         if (landingDiv) {
           document.removeEventListener("mousemove", onMouseMove);
           landingDiv.removeEventListener("touchstart", onTouchStart);

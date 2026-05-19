@@ -11,11 +11,12 @@ const setLighting = (scene: THREE.Scene) => {
   directionalLight.shadow.mapSize.height = 1024;
   directionalLight.shadow.camera.near = 0.5;
   directionalLight.shadow.camera.far = 50;
+  directionalLight.shadow.autoUpdate = false; // Disable continuous shadow updates
   scene.add(directionalLight);
 
   const pointLight = new THREE.PointLight(0xc2a4ff, 0, 100, 3);
   pointLight.position.set(3, 12, 4);
-  pointLight.castShadow = true;
+  pointLight.castShadow = false; // Disable point light shadows to prevent 6-pass cubemap overhead
   scene.add(pointLight);
 
   new RGBELoader()
@@ -46,6 +47,12 @@ const setLighting = (scene: THREE.Scene) => {
       intensity: 1,
       duration: duration,
       ease: ease,
+      onUpdate: () => {
+        directionalLight.shadow.needsUpdate = true; // Update shadow map while light fades in
+      },
+      onComplete: () => {
+        directionalLight.shadow.needsUpdate = false;
+      }
     });
     gsap.to(".character-rim", {
       y: "55%",
