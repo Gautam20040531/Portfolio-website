@@ -94,23 +94,18 @@ export default Loading;
 
 export const setProgress = (setLoading: (value: number) => void) => {
   let percent: number = 0;
+  const startTime = Date.now();
+  const duration = 1200; // Smooth 1.2s progression
 
   let interval = setInterval(() => {
-    if (percent <= 50) {
-      let rand = Math.round(Math.random() * 5);
-      percent = percent + rand;
-      setLoading(percent);
-    } else {
+    const elapsed = Date.now() - startTime;
+    percent = Math.min(100, Math.round((elapsed / duration) * 100));
+    setLoading(percent);
+
+    if (percent >= 100) {
       clearInterval(interval);
-      interval = setInterval(() => {
-        percent = percent + Math.round(Math.random());
-        setLoading(percent);
-        if (percent > 91) {
-          clearInterval(interval);
-        }
-      }, 2000);
     }
-  }, 100);
+  }, 16);
 
   function clear() {
     clearInterval(interval);
@@ -118,18 +113,7 @@ export const setProgress = (setLoading: (value: number) => void) => {
   }
 
   function loaded() {
-    return new Promise<number>((resolve) => {
-      clearInterval(interval);
-      interval = setInterval(() => {
-        if (percent < 100) {
-          percent++;
-          setLoading(percent);
-        } else {
-          resolve(percent);
-          clearInterval(interval);
-        }
-      }, 2);
-    });
+    return Promise.resolve(100);
   }
   return { loaded, percent, clear };
 };

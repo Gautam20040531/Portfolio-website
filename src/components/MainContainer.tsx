@@ -13,6 +13,7 @@ import Work from "./Work";
 // GSAP ইম্পোর্ট করা হলো রিফ্রেশ করার জন্য
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Lenis from "lenis";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -52,6 +53,83 @@ const MainContainer = ({ children }: PropsWithChildren) => {
 
     return () => {
       if (resizeObserver) resizeObserver.disconnect();
+    };
+  }, []);
+
+  // Lenis Smooth Scroll Integration
+  useEffect(() => {
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      orientation: "vertical",
+      gestureOrientation: "vertical",
+      smoothWheel: true,
+      wheelMultiplier: 1.1,
+      touchMultiplier: 1.5,
+      infinite: false,
+    });
+
+    lenis.on("scroll", ScrollTrigger.update);
+
+    const gsapTicker = (time: number) => {
+      lenis.raf(time * 1000);
+    };
+    gsap.ticker.add(gsapTicker);
+    gsap.ticker.lagSmoothing(0);
+
+    return () => {
+      gsap.ticker.remove(gsapTicker);
+      lenis.destroy();
+    };
+  }, []);
+
+  // Dynamic Slash-based URL Routing & Scroll Synchronization
+  useEffect(() => {
+    const sections = [
+      { id: "landingDiv", path: "/" },
+      { id: "about", path: "/about" },
+      { id: "what-i-do", path: "/what-i-do" },
+      { id: "career", path: "/career" },
+      { id: "work", path: "/work" },
+      { id: "contact", path: "/contact" },
+    ];
+
+    const triggers: ScrollTrigger[] = [];
+
+    // 1. Create ScrollTriggers to update the URL dynamically on scroll
+    sections.forEach((sec) => {
+      const el = document.getElementById(sec.id);
+      if (el) {
+        const trigger = ScrollTrigger.create({
+          trigger: el,
+          start: "top 50%",
+          end: "bottom 50%",
+          onToggle: (self) => {
+            if (self.isActive) {
+              window.history.replaceState(null, "", sec.path);
+            }
+          },
+        });
+        triggers.push(trigger);
+      }
+    });
+
+    // 2. Handle initial page load routing (e.g. refresh at /about or /work)
+    const initialPath = window.location.pathname;
+    if (initialPath && initialPath !== "/") {
+      const matched = sections.find((s) => s.path === initialPath);
+      if (matched) {
+        setTimeout(() => {
+          const el = document.getElementById(matched.id);
+          if (el) {
+            el.scrollIntoView({ behavior: "smooth" });
+          }
+        }, 1200); // Wait for components to load and 3D character initialization
+      }
+    }
+
+    return () => {
+      triggers.forEach((t) => t.kill());
     };
   }, []);
 

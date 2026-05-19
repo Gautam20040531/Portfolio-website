@@ -24,7 +24,21 @@ export const LoadingProvider = ({ children }: PropsWithChildren) => {
     setIsLoading,
     setLoading,
   };
-  useEffect(() => {}, [loading]);
+  useEffect(() => {
+    if (window.innerWidth <= 1024) {
+      const startTime = Date.now();
+      const duration = 1200;
+      const interval = setInterval(() => {
+        const elapsed = Date.now() - startTime;
+        const percent = Math.min(100, Math.round((elapsed / duration) * 100));
+        setLoading(percent);
+        if (percent >= 100) {
+          clearInterval(interval);
+        }
+      }, 16);
+      return () => clearInterval(interval);
+    }
+  }, []);
 
   return (
     <LoadingContext.Provider value={value as LoadingType}>
